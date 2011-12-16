@@ -1,5 +1,5 @@
 <li class="post">
-  <h3> 
+  <h3>
     <a name="post_<%= blog_post.id %>"></a>
     <%= link_to sanitize(blog_post.title),
                 blog_post_path(@blog, blog_post),
@@ -13,9 +13,9 @@
   <%= display blog_post.body %>
   <p class="meta">
     Posted <%= time_ago_in_words(blog_post.created_at) %> ago
-    by <%= person_link @blog.person %> | 
+    by <%= person_link @blog.person %> |
     <%- n = blog_post.comments.count -%>
     <%= link_to pluralize(n, "comment"),
                 blog_post_path(@blog, blog_post, :comments => n),
-                :class => "show-follow" %>    
+                :class => "show-follow" %>
   </p>

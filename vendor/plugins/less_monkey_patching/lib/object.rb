@@ -14,15 +14,15 @@ class Object
     collection = (args.length == 1 ? args.first : args)
     !collection.include?(self)
   end
-  
-  
-  
+
+
+
 
   def if_nil out = nil
     return out if nil?
     self
   end
-  
+
   def if_method_nil method, out = nil
     return out if nil?
     return send(method) if out.nil?
@@ -31,7 +31,7 @@ class Object
   end
 
 
-  
+
   def valid_email?
     false
   end

@@ -15,8 +15,8 @@ class ActionMailer::Base
     @charset = options[:charset] || "utf-8"
     @content_type = options[:content_type] || "text/plain"
   end
-  
-  
+
+
   def self.add_recipients(addresses, address)
     if addresses.blank?
       address
@@ -24,7 +24,7 @@ class ActionMailer::Base
       addresses << ";#{address}"
     end
   end
-  
+
 =begin
 #add blocks like this to controlers
 class ContactMailer < ActionMailer::Base
@@ -32,12 +32,12 @@ class ContactMailer < ActionMailer::Base
     self.generic_mailer(options)
   end
 end
-  
+
 
 #call like this
   ContactMailer.deliver_contact_us(
    :recipients => "x@x.com",
-   :body => { 
+   :body => {
                :name => params[:name],
                :phone => params[:phone],
                :email => params[:email],

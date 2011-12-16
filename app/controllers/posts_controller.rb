@@ -2,7 +2,7 @@
 # There is some trickery to handle the two in a unified manner.
 class PostsController < ApplicationController
   include ApplicationHelper
-  
+
   before_filter :login_required, :except => [ :index, :show ]
   before_filter :get_instance_vars
   before_filter :authorize_new, :only => [:create, :new]
@@ -43,7 +43,7 @@ class PostsController < ApplicationController
   # Used for both forum and blog posts.
   def create
     @post = new_resource_post
-    
+
     respond_to do |format|
       if @post.save
         flash[:success] = 'Post created'
@@ -74,11 +74,11 @@ class PostsController < ApplicationController
       format.html { redirect_to posts_url }
     end
   end
-  
+
   private
-  
+
     ## Before filters
-  
+
     def get_instance_vars
       @post = model.find(params[:id]) unless params[:id].nil?
       if forum?
@@ -110,12 +110,12 @@ class PostsController < ApplicationController
         redirect_to home_url unless authorized
       end
     end
-    
+
     # A post is valid if its blog is the current blog.
     def valid_post?
       @post.blog == @blog
     end
-    
+
     # Authorize post deletions.
     # Only admin users can destroy forum posts.
     # Only blog owners can destroy blog posts.
@@ -128,7 +128,7 @@ class PostsController < ApplicationController
     end
 
     ## Handle forum and blog posts in a uniform manner.
-    
+
     # Return the appropriate model corresponding to the type of post.
     def model
       if forum?
@@ -137,25 +137,25 @@ class PostsController < ApplicationController
         BlogPost
       end
     end
-    
+
     # Return the posts array for the given resource.
     def resource_posts
       if forum?
         @topic.posts
       elsif blog?
         @blog.posts.paginate(:page => params[:page])
-      end  
+      end
     end
-    
+
     # Return a new post for the given resource.
     def new_resource_post
       if forum?
         @post = @topic.posts.new(params[:post].merge(:person => current_person))
       elsif blog?
         @post = @blog.posts.new(params[:post])
-      end      
+      end
     end
-    
+
     # Return the template for the current resource given the name.
     # For example, on a blog resource_template("new") gives "blog_new"
     def resource_template(name)
@@ -170,7 +170,7 @@ class PostsController < ApplicationController
         "blog"
       end
     end
-    
+
     # Return URL to redirect to after post creation.
     def post_url
       if forum?
@@ -186,7 +186,7 @@ class PostsController < ApplicationController
        forum_topic_url(@forum, @topic)
       elsif blog?
         blog_url(@blog)
-      end      
+      end
     end
 
     # True if resource lives in a discussion forum.

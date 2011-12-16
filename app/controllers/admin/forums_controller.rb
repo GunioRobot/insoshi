@@ -2,7 +2,7 @@ class Admin::ForumsController < ApplicationController
 
   before_filter :login_required, :admin_required, :setup
   before_filter :protect_last_forum, :only => :destroy
-  
+
 
   def index
     @forums = Forum.find(:all)
@@ -72,7 +72,7 @@ class Admin::ForumsController < ApplicationController
     def setup
       @body = "forum"
     end
-    
+
     def protect_last_forum
       if Forum.count == 1
         flash[:error] = "There must be at least one forum."

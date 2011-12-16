@@ -7,11 +7,11 @@ Parameters:
   GEM      Name of gem (required)
   VERSION  Version of gem to freeze (optional)
   ONLY     RAILS_ENVs for which the GEM will be active (optional)
-  
+
 eos
       break
     end
-    
+
     # ONLY=development[,test] etc
     only_list = (ENV['ONLY'] || "").split(',')
     only_if_begin = only_list.size == 0 ? "" : <<-EOS
@@ -25,33 +25,33 @@ if %w[#{only_list.join(' ')}].include?(ENV['RAILS_ENV'])
     # RubyGems <0.9.5
     # Gem.manage_gems
     # Gem::CommandManager.new
-    
+
     # RubyGems >=0.9.5
     require 'rubygems/command_manager'
     require 'rubygems/commands/unpack_command'
     Gem::CommandManager.instance
-    
+
     gem = (version = ENV['VERSION']) ?
       Gem.cache.search(gem_name, "= #{version}").first :
       Gem.cache.search(gem_name).sort_by { |g| g.version }.last
-    
+
     version ||= gem.version.version rescue nil
-    
+
     unpack_command_class = Gem::UnpackCommand rescue nil || Gem::Commands::UnpackCommand
     unless gem && path = unpack_command_class.new.get_path(gem_name, version)
       raise "No gem #{gem_name} #{version} is installed.  Do 'gem list #{gem_name}' to see what you have available."
     end
-    
+
     gems_dir = File.join(RAILS_ROOT, 'vendor', 'gems')
     mkdir_p gems_dir, :verbose => false if !File.exists?(gems_dir)
-    
+
     target_dir = ENV['TO'] || File.basename(path).sub(/\.gem$/, '')
     mkdir_p "vendor/gems/#{target_dir}", :verbose => false
-    
+
     chdir gems_dir, :verbose => false do
       mkdir_p target_dir, :verbose => false
       abs_target_dir = File.join(Dir.pwd, target_dir)
-      
+
       (gem = Gem::Installer.new(path)).unpack(abs_target_dir)
       chdir target_dir, :verbose => false do
         if !File.exists?('init.rb')

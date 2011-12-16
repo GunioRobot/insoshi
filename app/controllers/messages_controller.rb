@@ -20,13 +20,13 @@ class MessagesController < ApplicationController
       format.html { render :template => "messages/index" }
     end
   end
-  
+
   # GET /messages/trash
   def trash
     @messages = current_person.trashed_messages(params[:page])
     respond_to do |format|
       format.html { render :template => "messages/index" }
-    end    
+    end
   end
 
   def show
@@ -36,7 +36,7 @@ class MessagesController < ApplicationController
     end
   end
 
-  def new    
+  def new
     @message = Message.new
     @recipient = Person.find(params[:person_id])
 
@@ -54,13 +54,13 @@ class MessagesController < ApplicationController
     @recipient = not_current_person(original_message)
     respond_to do |format|
       format.html { render :action => "new" }
-    end    
+    end
   end
 
   def create
     @message = Message.new(params[:message].merge(:sender => current_person,
                                                   :recipient => @recipient))
-    
+
     respond_to do |format|
       if @message.save
         flash[:success] = 'Message sent!'
@@ -79,12 +79,12 @@ class MessagesController < ApplicationController
       # This should never happen...
       flash[:error] = "Invalid action"
     end
-  
+
     respond_to do |format|
       format.html { redirect_to messages_url }
     end
   end
-  
+
   def undestroy
     @message = Message.find(params[:id])
     if @message.untrash(current_person)
@@ -99,11 +99,11 @@ class MessagesController < ApplicationController
   end
 
   private
-  
+
     def setup
       @body = "messages"
     end
-  
+
     def authenticate_person
       @message = Message.find(params[:id])
       unless (current_person == @message.sender or
@@ -115,12 +115,12 @@ class MessagesController < ApplicationController
     def handle_cancel
       redirect_to messages_url if params[:commit] == "Cancel"
     end
-    
+
     def validate_reply
       @recipient = Person.find(params[:person_id])
       redirect_to home_url if reply? and not valid_reply?(@recipient)
     end
-    
+
     def reply?
       !params[:parent_id].nil?
     end
@@ -129,7 +129,7 @@ class MessagesController < ApplicationController
       original = Message.find(params[:parent_id])
       original.recipient == current_person and original.sender == recipient
     end
-    
+
     # Return the proper recipient for a message.
     # This should not be the current person in order to allow multiple replies
     # to the same message.

@@ -4,7 +4,7 @@
 module ActionView::Helpers::ActiveRecordHelper
 
 
-  
+
   # Returns a string with a div containing all of the error messages for the object and method located as instance variables by the names
   # given.  This method mimics the output of +error_messages_for+, and is meant to be used in leau of +error_message_on+.
   #
@@ -17,7 +17,7 @@ module ActionView::Helpers::ActiveRecordHelper
   # the method will be used.
   #
   # Specifying one object:
-  # 
+  #
   #   error_messages_on 'user', 'login'
   #
   #
@@ -42,18 +42,18 @@ module ActionView::Helpers::ActiveRecordHelper
       content_tag(:ul, errors.map {|msg| content_tag(:li, "#{name} #{msg}") }),
       html
     )
-    else 
+    else
       ''
     end
   end
-  
-  
-  
+
+
+
   def errors_to_s(errors)
     errors.map do |e, m|
       "#{e.humanize unless e == "base"} #{m}\n"
     end.to_s.chomp
   end
-  
-  
+
+
 end

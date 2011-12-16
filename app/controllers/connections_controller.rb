@@ -1,19 +1,19 @@
 class ConnectionsController < ApplicationController
-  
+
   before_filter :login_required, :setup
   before_filter :authorize_view, :only => :index
   before_filter :authorize_person, :only => [:edit, :update, :destroy]
-  
+
   # Show all the contacts for a person.
   def index
     @contacts = @person.contacts.paginate(:page => params[:page],
                                           :per_page => RASTER_PER_PAGE)
   end
-  
+
   def edit
     @contact = @connection.contact
   end
-  
+
   def create
     @contact = Person.find(params[:person_id])
 
@@ -31,7 +31,7 @@ class ConnectionsController < ApplicationController
   end
 
   def update
-    
+
     respond_to do |format|
       contact = @connection.contact
       name = contact.name
@@ -50,7 +50,7 @@ class ConnectionsController < ApplicationController
 
   def destroy
     @connection.breakup
-    
+
     respond_to do |format|
       flash[:success] = "Ended connection with #{@connection.contact.name}"
       format.html { redirect_to( person_connections_url(current_person)) }
@@ -71,7 +71,7 @@ class ConnectionsController < ApplicationController
         redirect_to home_url
       end
     end
-  
+
     # Make sure the current person is correct for this connection.
     def authorize_person
       @connection = Connection.find(params[:id],

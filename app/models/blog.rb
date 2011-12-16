@@ -4,9 +4,9 @@
 # Table name: blogs
 #
 #  id         :integer         not null, primary key
-#  person_id  :integer         
-#  created_at :datetime        
-#  updated_at :datetime        
+#  person_id  :integer
+#  created_at :datetime
+#  updated_at :datetime
 #
 
 class Blog < ActiveRecord::Base

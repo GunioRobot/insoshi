@@ -4,37 +4,37 @@
 # Table name: photos
 #
 #  id           :integer         not null, primary key
-#  person_id    :integer         
-#  parent_id    :integer         
-#  content_type :string(255)     
-#  filename     :string(255)     
-#  thumbnail    :string(255)     
-#  size         :integer         
-#  width        :integer         
-#  height       :integer         
-#  primary      :boolean         
-#  created_at   :datetime        
-#  updated_at   :datetime        
+#  person_id    :integer
+#  parent_id    :integer
+#  content_type :string(255)
+#  filename     :string(255)
+#  thumbnail    :string(255)
+#  size         :integer
+#  width        :integer
+#  height       :integer
+#  primary      :boolean
+#  created_at   :datetime
+#  updated_at   :datetime
 #
 
 class Photo < ActiveRecord::Base
   include ActivityLogger
   UPLOAD_LIMIT = 5 # megabytes
-  
+
   belongs_to :person
-  has_attachment :content_type => :image, 
-                 :storage => :file_system, 
+  has_attachment :content_type => :image,
+                 :storage => :file_system,
                  :max_size => UPLOAD_LIMIT.megabytes,
                  :min_size => 1,
                  :resize_to => '240>',
                  :thumbnails => { :thumbnail    => '72>',
                                   :icon         => '36>',
                                   :bounded_icon => '36x36>' }
-  
+
   has_many :activities, :foreign_key => "item_id", :dependent => :destroy
-    
+
   after_save :log_activity
-                 
+
   # Override the crappy default AttachmentFu error messages.
   def validate
     if filename.nil?
@@ -53,7 +53,7 @@ class Photo < ActiveRecord::Base
       end
     end
   end
-  
+
   def log_activity
     if self.primary?
       activity = Activity.create!(:item => self, :person => self.person)

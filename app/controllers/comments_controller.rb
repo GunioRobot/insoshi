@@ -1,7 +1,7 @@
 # NOTE: We use "comments" for both wall topic comments and blog comments,
 # There is some trickery to handle the two in a unified manner.
 class CommentsController < ApplicationController
-  
+
   before_filter :login_required
   before_filter :get_instance_vars
   before_filter :authorize_destroy, :only => [:destroy]
@@ -19,7 +19,7 @@ class CommentsController < ApplicationController
   def create
     @comment = parent.comments.new(params[:comment].
                                    merge(:commenter => current_person))
-    
+
     respond_to do |format|
       if @comment.save
         flash[:success] = 'Comment was successfully created.'
@@ -39,9 +39,9 @@ class CommentsController < ApplicationController
       format.html { redirect_to comments_url }
     end
   end
-  
+
   private
-  
+
     def get_instance_vars
       if wall?
         @person = Person.find(params[:person_id])
@@ -50,7 +50,7 @@ class CommentsController < ApplicationController
         @post = Post.find(params[:post_id])
       end
     end
-    
+
     def authorize_destroy
       if wall?
         redirect_to home_url unless current_person?(@person)
@@ -58,18 +58,18 @@ class CommentsController < ApplicationController
         redirect_to home_url unless current_person?(@blog.person)
       end
     end
-    
+
     ## Handle wall and blog comments in a uniform manner.
-    
+
     # Return the comments array for the given resource.
     def resource_comments
       if wall?
         @person.comments
       elsif blog?
         @post.comments.paginate(:page => params[:page])
-      end  
+      end
     end
-    
+
     # Return a the parent (person or blog post) of the comment.
     def parent
       if wall?
@@ -78,7 +78,7 @@ class CommentsController < ApplicationController
         @post
       end
     end
-    
+
     # Return the template for the current resource given the name.
     # For example, on a blog resource_template("new") gives "blog_new"
     def resource_template(name)
@@ -93,7 +93,7 @@ class CommentsController < ApplicationController
         "blog_post"
       end
     end
-    
+
     # Return the URL for the resource comments.
     def comments_url
       if wall?

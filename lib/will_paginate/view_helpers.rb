@@ -7,7 +7,7 @@ module WillPaginate
   # pagination links for the given collection. The helper itself is lightweight
   # and serves only as a wrapper around link renderer instantiation; the
   # renderer then does all the hard work of generating the HTML.
-  # 
+  #
   # == Global options for helpers
   #
   # Options for pagination helpers are optional and get their default values from the
@@ -38,7 +38,7 @@ module WillPaginate
     # Renders Digg/Flickr-style pagination for a WillPaginate::Collection
     # object. Nil is returned if there is only one page in total; no point in
     # rendering the pagination in that case...
-    # 
+    #
     # ==== Options
     # * <tt>:class</tt> -- CSS class name for the generated DIV (default: "pagination")
     # * <tt>:prev_label</tt> -- default: "« Previous"
@@ -59,7 +59,7 @@ module WillPaginate
     #
     # All options beside listed ones are passed as HTML attributes to the container
     # element for pagination links (the DIV). For example:
-    # 
+    #
     #   <%= will_paginate @posts, :id => 'wp_posts' %>
     #
     # ... will result in:
@@ -114,7 +114,7 @@ module WillPaginate
       # previous/next buttons
       links.unshift page_link_or_span(@collection.previous_page, 'disabled', @options[:prev_label])
       links.push    page_link_or_span(@collection.next_page,     'disabled', @options[:next_label])
-      
+
       html = links.join(@options[:separator])
       @options[:container] ? @template.content_tag(:div, html, html_attributes) : html
     end
@@ -128,14 +128,14 @@ module WillPaginate
       end
       @html_attributes
     end
-    
+
   protected
 
     def windowed_paginator
       inner_window, outer_window = @options[:inner_window].to_i, @options[:outer_window].to_i
       window_from = current_page - inner_window
       window_to = current_page + inner_window
-      
+
       # adjust lower or upper limit if other is out of bounds
       if window_to > total_pages
         window_from -= window_to - total_pages
@@ -144,13 +144,13 @@ module WillPaginate
         window_to += 1 - window_from
         window_from = 1
       end
-      
+
       visible   = (1..total_pages).to_a
       left_gap  = (2 + outer_window)...window_from
       right_gap = (window_to + 1)...(total_pages - outer_window)
       visible  -= left_gap.to_a  if left_gap.last - left_gap.first > 1
       visible  -= right_gap.to_a if right_gap.last - right_gap.first > 1
-      
+
       links, prev = [], 0
 
       visible.each do |n|
@@ -164,7 +164,7 @@ module WillPaginate
           redo
         end
       end
-      
+
       links
     end
 

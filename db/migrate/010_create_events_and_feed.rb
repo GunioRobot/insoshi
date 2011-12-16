@@ -10,13 +10,13 @@ class CreateEventsAndFeed < ActiveRecord::Migration
     end
     add_index :events, :item_id
     add_index :events, :item_type
-    
+
     create_table :feeds do |t|
       t.integer :person_id
       t.integer :event_id
     end
-    
-    add_index :feeds, [:person_id, :event_id]    
+
+    add_index :feeds, [:person_id, :event_id]
   end
 
   def self.down

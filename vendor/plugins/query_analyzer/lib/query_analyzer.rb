@@ -33,10 +33,10 @@ module ActiveRecord
     class MysqlAdapter < AbstractAdapter
       private
         alias_method :select_without_analyzer, :select
-        
+
         def select(sql, name = nil)
           query_results = select_without_analyzer(sql, name)
-          
+
           if @logger and @logger.level <= Logger::INFO
             @logger.debug(
               @logger.silence do
@@ -45,7 +45,7 @@ module ActiveRecord
                 )
               end
             ) if sql =~ /^select/i
-          end          
+          end
           query_results
         end
     end

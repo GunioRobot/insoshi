@@ -4,19 +4,19 @@
 # Table name: comments
 #
 #  id               :integer         not null, primary key
-#  commenter_id     :integer         
-#  commentable_id   :integer         
+#  commenter_id     :integer
+#  commentable_id   :integer
 #  commentable_type :string(255)     default(""), not null
-#  body             :text            
-#  created_at       :datetime        
-#  updated_at       :datetime        
+#  body             :text
+#  created_at       :datetime
+#  updated_at       :datetime
 #
 
 class Comment < ActiveRecord::Base
   include ActivityLogger
-  
+
   attr_accessor :commented_person
-  
+
   belongs_to :commentable, :polymorphic => true
   belongs_to :commenter, :class_name => "Person",
                          :foreign_key => "commenter_id"
@@ -30,19 +30,19 @@ class Comment < ActiveRecord::Base
   validates_length_of :body, :maximum => MAX_TEXT_LENGTH
   validates_length_of :body, :maximum => SMALL_TEXT_LENGTH,
                              :if => :wall_comment?
-  
+
   after_create :log_activity
-  
+
   private
-    
+
     def wall_comment?
       commentable.class.to_s == "Person"
     end
-  
+
     def blog_post_comment?
       commentable.class.to_s == "BlogPost"
     end
-    
+
     # Return the person for the thing commented on.
     # For example, for blog post comments it's the blog's person
     # For wall comments, it's the person himself.
@@ -54,7 +54,7 @@ class Comment < ActiveRecord::Base
                               commentable.blog.person
                             end
     end
-  
+
     def log_activity
       activity = Activity.create!(:item => self, :person => commenter)
       add_activities(:activity => activity, :person => commenter)

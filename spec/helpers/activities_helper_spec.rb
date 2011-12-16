@@ -9,7 +9,7 @@ describe ActivitiesHelper do
     self.stub!(:logged_in?).and_return(true)
     self.stub!(:current_person).and_return(people(:aaron))
   end
-  
+
   it "should have the right message for a wall comment" do
     # Quentin comments an Aaron's wall
     person = @current_person
@@ -37,8 +37,8 @@ describe ActivitiesHelper do
     feed_message(activity).should =~ /#{commenter.name}/
     feed_message(activity).should =~ /their own wall/
   end
-  
-  
+
+
   it "should have the right message for a blog comment" do
     post = posts(:blog_post)
     comment = post.comments.create(:body => "The body",
@@ -46,7 +46,7 @@ describe ActivitiesHelper do
     activity = Activity.find_by_item_id(comment)
     feed_message(activity).should =~ /blog post/
   end
-  
+
   it "should have the right message for a photo" do
     activity = Activity.new(:item => mock_photo, :person => @current_person)
     feed_message(activity).should =~ /profile picture/

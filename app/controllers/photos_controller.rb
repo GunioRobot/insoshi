@@ -6,7 +6,7 @@ class PhotosController < ApplicationController
 
   def index
     @photos = current_person.photos
-  
+
     respond_to do |format|
       format.html
     end
@@ -35,7 +35,7 @@ class PhotosController < ApplicationController
     person_data = { :person => current_person,
                     :primary => current_person.photos.empty? }
     @photo = Photo.new(params[:photo].merge(person_data))
-  
+
     respond_to do |format|
       if @photo.save
         flash[:success] = "Photo successfully uploaded"
@@ -54,12 +54,12 @@ class PhotosController < ApplicationController
     end
     # This should only have one entry, but be paranoid.
     @old_primary = current_person.photos.select(&:primary?)
-  
+
     respond_to do |format|
       if @photo.update_attributes(:primary => true)
         @old_primary.each { |p| p.update_attributes!(:primary => false) }
         format.html { redirect_to(edit_person_path(current_person)) }
-      else    
+      else
         format.html do
           flash[:error] = "Invalid image!"
           redirect_to home_url
@@ -82,9 +82,9 @@ class PhotosController < ApplicationController
       format.html { redirect_to edit_person_url(current_person) }
     end
   end
-  
+
   private
-  
+
     def correct_user_required
       @photo = Photo.find(params[:id])
       if @photo.nil?

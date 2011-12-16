@@ -1,11 +1,11 @@
 class PeopleController < ApplicationController
-  
+
   skip_before_filter :require_activation, :only => :verify
   skip_before_filter :admin_warning, :only => [ :show, :update ]
   before_filter :login_required, :only => [ :edit, :update ]
   before_filter :correct_user_required, :only => [ :edit, :update ]
   before_filter :setup
-  
+
   def index
     @people = Person.active(params[:page])
 
@@ -13,7 +13,7 @@ class PeopleController < ApplicationController
       format.html
     end
   end
-  
+
   def show
     @person = Person.find(params[:id], :include => :activities)
     if @person.deactivated?
@@ -28,7 +28,7 @@ class PeopleController < ApplicationController
       format.html
     end
   end
-  
+
   def new
     @body = "register single-col"
     @person = Person.new
@@ -49,7 +49,7 @@ class PeopleController < ApplicationController
           @person.deactivated = true; @person.save!
           @verification = EmailVerification.create(:person => @person)
           @person.email_verifications << @verification
-          flash[:notice] = %(Thanks for signing up! A verification email has 
+          flash[:notice] = %(Thanks for signing up! A verification email has
                              been sent to #{@person.email}.)
           format.html { redirect_to(home_url) }
         else
@@ -104,7 +104,7 @@ class PeopleController < ApplicationController
       end
     end
   end
-  
+
   def common_contacts
     @person = Person.find(params[:id])
     @common_connections = @person.common_connections_with(current_person,
@@ -113,13 +113,13 @@ class PeopleController < ApplicationController
       format.html
     end
   end
-  
+
   private
 
     def setup
       @body = "person"
     end
-  
+
     def correct_user_required
       redirect_to home_url unless Person.find(params[:id]) == current_person
     end

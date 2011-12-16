@@ -4,19 +4,19 @@
 # Table name: people
 #
 #  id                        :integer         not null, primary key
-#  email                     :string(255)     
-#  name                      :string(255)     
-#  remember_token            :string(255)     
-#  crypted_password          :string(255)     
-#  description               :text            
-#  remember_token_expires_at :datetime        
-#  last_contacted_at         :datetime        
-#  last_logged_in_at         :datetime        
+#  email                     :string(255)
+#  name                      :string(255)
+#  remember_token            :string(255)
+#  crypted_password          :string(255)
+#  description               :text
+#  remember_token_expires_at :datetime
+#  last_contacted_at         :datetime
+#  last_logged_in_at         :datetime
 #  forum_posts_count         :integer         default(0), not null
 #  blog_post_comments_count  :integer         default(0), not null
 #  wall_comments_count       :integer         default(0), not null
-#  created_at                :datetime        
-#  updated_at                :datetime        
+#  created_at                :datetime
+#  updated_at                :datetime
 #  admin                     :boolean         not null
 #  deactivated               :boolean         not null
 #
@@ -208,11 +208,11 @@ class Person < ActiveRecord::Base
   def icon
     photo.nil? ? "default_icon.png" : photo.public_filename(:icon)
   end
-  
+
   def bounded_icon
     photo.nil? ? "default_icon.png" : photo.public_filename(:bounded_icon)
   end
-  
+
   # Return the photos ordered by primary first, then by created_at.
   # They are already ordered by created_at as per the has_many association.
   def sorted_photos
@@ -302,7 +302,7 @@ class Person < ActiveRecord::Base
                                               true, false])
     admin? and num_admins == 1
   end
-  
+
   def active?
     not deactivated?
   end

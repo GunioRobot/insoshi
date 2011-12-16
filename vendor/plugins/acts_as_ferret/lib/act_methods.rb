@@ -1,40 +1,40 @@
 module ActsAsFerret #:nodoc:
-        
-  # This module defines the acts_as_ferret method and is included into 
+
+  # This module defines the acts_as_ferret method and is included into
   # ActiveRecord::Base
   module ActMethods
-          
-    
+
+
     def reloadable?; false end
-    
-    # declares a class as ferret-searchable. 
+
+    # declares a class as ferret-searchable.
     #
     # ====options:
     # fields:: names all fields to include in the index. If not given,
     #          all attributes of the class will be indexed. You may also give
-    #          symbols pointing to instance methods of your model here, i.e. 
-    #          to retrieve and index data from a related model. 
+    #          symbols pointing to instance methods of your model here, i.e.
+    #          to retrieve and index data from a related model.
     #
-    # additional_fields:: names fields to include in the index, in addition 
-    #                     to those derived from the db scheme. use if you want 
-    #                     to add custom fields derived from methods to the db 
-    #                     fields (which will be picked by aaf). This option will 
-    #                     be ignored when the fields option is given, in that 
+    # additional_fields:: names fields to include in the index, in addition
+    #                     to those derived from the db scheme. use if you want
+    #                     to add custom fields derived from methods to the db
+    #                     fields (which will be picked by aaf). This option will
+    #                     be ignored when the fields option is given, in that
     #                     case additional fields get specified there.
     #
     # index_dir:: declares the directory where to put the index for this class.
-    #             The default is RAILS_ROOT/index/RAILS_ENV/CLASSNAME. 
+    #             The default is RAILS_ROOT/index/RAILS_ENV/CLASSNAME.
     #             The index directory will be created if it doesn't exist.
     #
     # single_index:: set this to true to let this class use a Ferret
     #                index that is shared by all classes having :single_index set to true.
-    #                :store_class_name is set to true implicitly, as well as index_dir, so 
+    #                :store_class_name is set to true implicitly, as well as index_dir, so
     #                don't bother setting these when using this option. the shared index
     #                will be located in index/<RAILS_ENV>/shared .
     #
     # store_class_name:: to make search across multiple models (with either
     #                    single_index or the multi_search method) useful, set
-    #                    this to true. the model class name will be stored in a keyword field 
+    #                    this to true. the model class name will be stored in a keyword field
     #                    named class_name
     #
     # reindex_batch_size:: reindexing is done in batches of this size, default is 1000
@@ -42,13 +42,13 @@ module ActsAsFerret #:nodoc:
     #                      algorithm if this model uses a non-integer primary key named
     #                      'id' on MySQL.
     #
-    # ferret:: Hash of Options that directly influence the way the Ferret engine works. You 
-    #          can use most of the options the Ferret::I class accepts here, too. Among the 
+    # ferret:: Hash of Options that directly influence the way the Ferret engine works. You
+    #          can use most of the options the Ferret::I class accepts here, too. Among the
     #          more useful are:
     #
     #     or_default:: whether query terms are required by
     #                  default (the default, false), or not (true)
-    # 
+    #
     #     analyzer:: the analyzer to use for query parsing (default: nil,
     #                which means the ferret StandardAnalyzer gets used)
     #
@@ -56,14 +56,14 @@ module ActsAsFerret #:nodoc:
     #                     that don't have an explicit field list. This list should *not*
     #                     contain any untokenized fields. If it does, you're asking
     #                     for trouble (i.e. not getting results for queries having
-    #                     stop words in them). Aaf by default initializes the default field 
-    #                     list to contain all tokenized fields. If you use :single_index => true, 
+    #                     stop words in them). Aaf by default initializes the default field
+    #                     list to contain all tokenized fields. If you use :single_index => true,
     #                     you really should set this option specifying your default field
     #                     list (which should be equal in all your classes sharing the index).
-    #                     Otherwise you might get incorrect search results and you won't get 
+    #                     Otherwise you might get incorrect search results and you won't get
     #                     any lazy loading of stored field data.
     #
-    # For downwards compatibility reasons you can also specify the Ferret options in the 
+    # For downwards compatibility reasons you can also specify the Ferret options in the
     # last Hash argument.
     def acts_as_ferret(options={}, ferret_options={})
       # default to DRb mode
@@ -71,12 +71,12 @@ module ActsAsFerret #:nodoc:
 
       # force local mode if running *inside* the Ferret server - somewhere the
       # real indexing has to be done after all :-)
-      # Usually the automatic detection of server mode works fine, however if you 
-      # require your model classes in environment.rb they will get loaded before the 
-      # DRb server is started, so this code is executed too early and detection won't 
-      # work. In this case you'll get endless loops resulting in "stack level too deep" 
-      # errors. 
-      # To get around this, start the DRb server with the environment variable 
+      # Usually the automatic detection of server mode works fine, however if you
+      # require your model classes in environment.rb they will get loaded before the
+      # DRb server is started, so this code is executed too early and detection won't
+      # work. In this case you'll get endless loops resulting in "stack level too deep"
+      # errors.
+      # To get around this, start the DRb server with the environment variable
       # FERRET_USE_LOCAL_INDEX set to '1'.
       logger.debug "Asked for a remote server ? #{options[:remote].inspect}, ENV[\"FERRET_USE_LOCAL_INDEX\"] is #{ENV["FERRET_USE_LOCAL_INDEX"].inspect}, looks like we are#{ActsAsFerret::Remote::Server.running || ENV['FERRET_USE_LOCAL_INDEX'] ? '' : ' not'} the server"
       options.delete(:remote) if ENV["FERRET_USE_LOCAL_INDEX"] || ActsAsFerret::Remote::Server.running
@@ -102,12 +102,12 @@ module ActsAsFerret #:nodoc:
       # AR hooks
       after_create  :ferret_create
       after_update  :ferret_update
-      after_destroy :ferret_destroy      
+      after_destroy :ferret_destroy
 
       cattr_accessor :aaf_configuration
 
       # default config
-      self.aaf_configuration = { 
+      self.aaf_configuration = {
         :index_dir => "#{ActsAsFerret::index_dir}/#{self.name.underscore}",
         :store_class_name => false,
         :name => self.table_name,
@@ -123,13 +123,13 @@ module ActsAsFerret #:nodoc:
       # merge aaf options with args
       aaf_configuration.update(options) if options.is_a?(Hash)
       # apply appropriate settings for shared index
-      if aaf_configuration[:single_index] 
-        aaf_configuration[:index_dir] = "#{ActsAsFerret::index_dir}/shared" 
-        aaf_configuration[:store_class_name] = true 
+      if aaf_configuration[:single_index]
+        aaf_configuration[:index_dir] = "#{ActsAsFerret::index_dir}/shared"
+        aaf_configuration[:store_class_name] = true
       end
 
       # set ferret default options
-      aaf_configuration[:ferret].reverse_merge!( :or_default => false, 
+      aaf_configuration[:ferret].reverse_merge!( :or_default => false,
                                                  :handle_parse_errors => true,
                                                  :default_field => nil # will be set later on
                                                  #:max_clauses => 512,
@@ -141,7 +141,7 @@ module ActsAsFerret #:nodoc:
       aaf_configuration[:ferret].update(ferret_options) if ferret_options.is_a?(Hash)
 
       unless options[:remote]
-        ActsAsFerret::ensure_directory aaf_configuration[:index_dir] 
+        ActsAsFerret::ensure_directory aaf_configuration[:index_dir]
         aaf_configuration[:index_base_dir] = aaf_configuration[:index_dir]
         aaf_configuration[:index_dir] = find_last_index_version(aaf_configuration[:index_dir])
         logger.debug "using index in #{aaf_configuration[:index_dir]}"
@@ -155,7 +155,7 @@ module ActsAsFerret #:nodoc:
         :auto_flush        => true, # slower but more secure in terms of locking problems TODO disable when running in drb mode?
         :create_if_missing => true
       )
-      
+
       if aaf_configuration[:fields]
         add_fields(aaf_configuration[:fields])
       else
@@ -179,7 +179,7 @@ module ActsAsFerret #:nodoc:
         logger.warn "You really should set the acts_as_ferret :default_field option when using a shared index!"
         '*'
       else
-        aaf_configuration[:ferret_fields].keys.select do |f| 
+        aaf_configuration[:ferret_fields].keys.select do |f|
           aaf_configuration[:ferret_fields][f][:index] != :untokenized
         end
       end
@@ -192,11 +192,11 @@ module ActsAsFerret #:nodoc:
 
 
     protected
-    
+
     # find the most recent version of an index
     def find_last_index_version(basedir)
       # check for versioned index
-      versions = Dir.entries(basedir).select do |f| 
+      versions = Dir.entries(basedir).select do |f|
         dir = File.join(basedir, f)
         File.directory?(dir) && File.file?(File.join(dir, 'segments')) && f =~ /^\d+(_\d+)?$/
       end
@@ -210,16 +210,16 @@ module ActsAsFerret #:nodoc:
     end
 
 
-    # helper that defines a method that adds the given field to a ferret 
+    # helper that defines a method that adds the given field to a ferret
     # document instance
     def define_to_field_method(field, options = {})
       if options[:boost].is_a?(Symbol)
         dynamic_boost = options[:boost]
         options.delete :boost
       end
-      options.reverse_merge!( :store       => :no, 
-                              :highlight   => :yes, 
-                              :index       => :yes, 
+      options.reverse_merge!( :store       => :no,
+                              :highlight   => :yes,
+                              :index       => :yes,
                               :term_vector => :with_positions_offsets,
                               :boost       => 1.0 )
       options[:term_vector] = :no if options[:index] == :no
@@ -240,12 +240,12 @@ module ActsAsFerret #:nodoc:
     def add_fields(field_config)
       if field_config.is_a? Hash
         field_config.each_pair do |key,val|
-          define_to_field_method(key,val)                  
+          define_to_field_method(key,val)
         end
       elsif field_config.respond_to?(:each)
-        field_config.each do |field| 
+        field_config.each do |field|
           define_to_field_method(field)
-        end                
+        end
       end
     end
 

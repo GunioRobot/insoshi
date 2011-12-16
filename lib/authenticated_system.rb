@@ -14,7 +14,7 @@ module AuthenticatedSystem
 
     # Store the given person id in the session.
     def current_person=(new_person)
-      session[:person_id] = (new_person.nil? || new_person.is_a?(Symbol)) ? nil : new_person.id 
+      session[:person_id] = (new_person.nil? || new_person.is_a?(Symbol)) ? nil : new_person.id
       @current_person = new_person || :false
     end
 

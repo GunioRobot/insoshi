@@ -10,7 +10,7 @@ class FinderTest < ActiveRecordTestCase
   def test_new_methods_presence
     assert_respond_to_all Topic, %w(per_page paginate paginate_by_sql)
   end
-  
+
   def test_simple_paginate
     entries = Topic.paginate :page => nil
     assert_equal 1, entries.current_page
@@ -18,7 +18,7 @@ class FinderTest < ActiveRecordTestCase
     assert_nil entries.next_page
     assert_equal 1, entries.page_count
     assert_equal 4, entries.size
-    
+
     entries = Topic.paginate :page => 2
     assert_equal 2, entries.current_page
     assert_equal 1, entries.previous_page
@@ -30,14 +30,14 @@ class FinderTest < ActiveRecordTestCase
     # :page parameter in options is required!
     assert_raise(ArgumentError){ Topic.paginate }
     assert_raise(ArgumentError){ Topic.paginate({}) }
-    
+
     # explicit :all should not break anything
     assert_equal Topic.paginate(:page => nil), Topic.paginate(:all, :page => 1)
 
     # :count could be nil and we should still not cry
     assert_nothing_raised { Topic.paginate :page => 1, :count => nil }
   end
-  
+
   def test_paginate_with_per_page
     entries = Topic.paginate :page => 1, :per_page => 1
     assert_equal 1, entries.size
@@ -53,14 +53,14 @@ class FinderTest < ActiveRecordTestCase
     assert_equal 5, entries.size
     assert_equal 3, entries.page_count
   end
-  
+
   def test_paginate_with_order
     entries = Topic.paginate :page => 1, :order => 'created_at desc'
     expected = [topics(:futurama), topics(:harvey_birdman), topics(:rails), topics(:ar)].reverse
     assert_equal expected, entries.to_a
     assert_equal 1, entries.page_count
   end
-  
+
   def test_paginate_with_conditions
     entries = Topic.paginate :page => 1, :conditions => ["created_at > ?", 30.minutes.ago]
     expected = [topics(:rails), topics(:ar)]
@@ -70,30 +70,30 @@ class FinderTest < ActiveRecordTestCase
 
   def test_paginate_with_include_and_conditions
     entries = Topic.paginate \
-      :page     => 1, 
-      :include  => :replies,  
-      :conditions => "replies.content LIKE 'Bird%' ", 
+      :page     => 1,
+      :include  => :replies,
+      :conditions => "replies.content LIKE 'Bird%' ",
       :per_page => 10
 
-    expected = Topic.find :all, 
-      :include => 'replies', 
-      :conditions => "replies.content LIKE 'Bird%' ", 
+    expected = Topic.find :all,
+      :include => 'replies',
+      :conditions => "replies.content LIKE 'Bird%' ",
       :limit   => 10
 
     assert_equal expected, entries.to_a
     assert_equal 1, entries.total_entries
   end
-  
+
   def test_paginate_with_include_and_order
     entries = Topic.paginate \
-      :page     => 1, 
-      :include  => :replies,  
-      :order    => 'replies.created_at asc, topics.created_at asc', 
+      :page     => 1,
+      :include  => :replies,
+      :order    => 'replies.created_at asc, topics.created_at asc',
       :per_page => 10
 
-    expected = Topic.find :all, 
-      :include => 'replies', 
-      :order   => 'replies.created_at asc, topics.created_at asc', 
+    expected = Topic.find :all,
+      :include => 'replies',
+      :order   => 'replies.created_at asc, topics.created_at asc',
       :limit   => 10
 
     assert_equal expected, entries.to_a
@@ -106,15 +106,15 @@ class FinderTest < ActiveRecordTestCase
     assert_nothing_raised "THIS IS A BUG in Rails 1.2.3 that was fixed in [7326]. " +
         "Please upgrade to the 1-2-stable branch or edge Rails." do
       entries = project.topics.paginate \
-        :page     => 1, 
-        :include  => :replies,  
-        :conditions => "replies.content LIKE 'Nice%' ", 
+        :page     => 1,
+        :include  => :replies,
+        :conditions => "replies.content LIKE 'Nice%' ",
         :per_page => 10
     end
 
-    expected = Topic.find :all, 
-      :include => 'replies', 
-      :conditions => "project_id = #{project.id} AND replies.content LIKE 'Nice%' ", 
+    expected = Topic.find :all,
+      :include => 'replies',
+      :conditions => "project_id = #{project.id} AND replies.content LIKE 'Nice%' ",
       :limit   => 10
 
     assert_equal expected, entries.to_a
@@ -151,11 +151,11 @@ class FinderTest < ActiveRecordTestCase
     entries = project.replies.paginate_recent :page => 1
     assert_equal [replies(:brave)], entries
   end
-  
+
   def test_paginate_with_joins
     entries = Developer.paginate :page => 1,
                         :joins => 'LEFT JOIN developers_projects ON users.id = developers_projects.developer_id',
-                        :conditions => 'project_id = 1'        
+                        :conditions => 'project_id = 1'
     assert_equal 2, entries.size
     developer_names = entries.map { |d| d.name }
     assert developer_names.include?('David')
@@ -224,15 +224,15 @@ class FinderTest < ActiveRecordTestCase
       Topic.expects(:count)
       Topic.paginate_by_foo :page => 1
     end
-    
+
     def test_guessing_the_total_count
       Topic.expects(:find).returns(Array.new(2))
       Topic.expects(:count).never
-      
+
       entries = Topic.paginate :page => 2, :per_page => 4
       assert_equal 6, entries.total_entries
     end
-    
+
     def test_extra_parameters_stay_untouched
       Topic.expects(:find).with() { |*args| args.last.key? :foo }.returns(Array.new(5))
       Topic.expects(:count).with(){ |*args| args.last.key? :foo }.returns(1)
@@ -243,7 +243,7 @@ class FinderTest < ActiveRecordTestCase
     def test_count_doesnt_use_select_options
       Developer.expects(:find).with() { |*args| args.last.key? :select }.returns(Array.new(5))
       Developer.expects(:count).with(){ |*args| !args.last.key? :select }.returns(1)
-      
+
       Developer.paginate :select => 'users.*', :page => 1, :per_page => 4
     end
 
@@ -251,7 +251,7 @@ class FinderTest < ActiveRecordTestCase
       # scope-out compatibility
       Topic.expects(:find_best).returns(Array.new(5))
       Topic.expects(:with_best).returns(1)
-      
+
       Topic.paginate_best :page => 1, :per_page => 4
     end
 
@@ -259,7 +259,7 @@ class FinderTest < ActiveRecordTestCase
       # acts_as_taggable defines `find_tagged_with(tag, options)`
       Topic.expects(:find_tagged_with).with('will_paginate', :offset => 0, :limit => 5).returns([])
       Topic.expects(:count).with({}).returns(0)
-      
+
       Topic.paginate_tagged_with 'will_paginate', :page => 1, :per_page => 5
     end
 
@@ -267,7 +267,7 @@ class FinderTest < ActiveRecordTestCase
       assert_respond_to Developer, :paginate_by_sql
       Developer.expects(:find_by_sql).with('sql LIMIT 3 OFFSET 3').returns([])
       Developer.expects(:count_by_sql).with('SELECT COUNT(*) FROM (sql) AS count_table').returns(0)
-      
+
       entries = Developer.paginate_by_sql 'sql', :page => 2, :per_page => 3
       assert_equal 0, entries.total_entries
     end
@@ -275,7 +275,7 @@ class FinderTest < ActiveRecordTestCase
     def test_paginate_by_sql_respects_total_entries_setting
       Developer.expects(:find_by_sql).returns([])
       Developer.expects(:count_by_sql).never
-      
+
       entries = Developer.paginate_by_sql 'sql', :page => 1, :total_entries => 999
       assert_equal 999, entries.total_entries
     end
@@ -283,7 +283,7 @@ class FinderTest < ActiveRecordTestCase
     def test_paginate_by_sql_strips_order_by_when_counting
       Developer.expects(:find_by_sql).returns([])
       Developer.expects(:count_by_sql).with("SELECT COUNT(*) FROM (sql\n ) AS count_table").returns(0)
-      
+
       entries = Developer.paginate_by_sql "sql\n ORDER\nby foo, bar, `baz` ASC", :page => 1
     end
   end

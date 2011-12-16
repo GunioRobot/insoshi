@@ -11,17 +11,17 @@ Spec::Runner.configure do |config|
   config.use_transactional_fixtures = true
   config.use_instantiated_fixtures  = false
   config.fixture_path = RAILS_ROOT + '/spec/fixtures/'
-  
+
   # Load the custom matchers in spec/matchers
   matchers_path = File.dirname(__FILE__) + "/matchers"
   matchers_files = Dir.entries(matchers_path).select {|x| /\.rb\z/ =~ x}
   matchers_files.each do |path|
     require File.join(matchers_path, path)
   end
-  
+
   # Custom matchers includes
   config.include(CustomModelMatchers)
-  
+
   # == Fixtures
   #
   # You can declare fixtures for each example_group like this:
@@ -45,7 +45,7 @@ Spec::Runner.configure do |config|
   # config.mock_with :mocha
   # config.mock_with :flexmock
   # config.mock_with :rr
-  
+
   # Simulate an uploaded file.
   def uploaded_file(filename, content_type = "image/png")
     t = Tempfile.new(filename)
@@ -59,7 +59,7 @@ Spec::Runner.configure do |config|
     end
     return t
   end
-  
+
   def mock_photo(options = {})
     photo = mock_model(Photo)
     photo.stub!(:public_filename).and_return("photo.png")
@@ -67,13 +67,13 @@ Spec::Runner.configure do |config|
     photo.stub!(:primary?).and_return(photo.primary)
     photo
   end
-  
+
   # Write response body to output file.
   # This can be very helpful when debugging specs that test HTML.
   def output_body(response)
     File.open("tmp/index.html", "w") { |f| f.write(response.body) }
   end
-  
+
   # Make a user an admin.
   # All fixture people are not admins by default, to protect against mistakes.
   def admin!(person)

@@ -3,12 +3,12 @@
   <td><%= person_link person %></td>
   <td>
     <%- activity = person.deactivated? ? "activate" : "deactivate" -%>
-    <%= link_to activity, 
+    <%= link_to activity,
                 admin_person_path(person, :task => "deactivated"),
                 :method => :put %>
     |
     <%- activity = person.admin? ? "unadmin" : "admin" -%>
-    <%= link_to activity, 
+    <%= link_to activity,
                 admin_person_path(person, :task => "admin"),
                 :method => :put %>
   </td>

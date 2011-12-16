@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe Topic do
-  
+
   before(:each) do
     @person = people(:quentin)
     @topic = Topic.new(:name => "A topic", :forum => forums(:one),
@@ -11,7 +11,7 @@ describe Topic do
   it "should be valid" do
     @topic.should be_valid
   end
-  
+
   it "should require a name" do
     topic = Topic.new
     topic.should_not be_valid
@@ -21,11 +21,11 @@ describe Topic do
   it "should have a max name length" do
     @topic.should have_maximum(:name, Topic::MAX_NAME)
   end
-  
+
   it "should have many posts" do
     @topic.posts.should be_a_kind_of(Array)
   end
-  
+
   it "should destroy associated posts" do
     @topic.save!
     @topic.posts.create(:body => "body", :person => @person)
@@ -33,15 +33,15 @@ describe Topic do
     # spec/matchers/custom_model_matchers.rb.
     @topic.should destroy_associated(:posts)
   end
-  
+
   it "should belong to a person" do
     quentin = people(:quentin)
     topic = Topic.new(:person => quentin)
     topic.person.should == quentin
   end
-  
+
   describe "associations" do
-    
+
     before(:each) do
       @topic.save!
     end

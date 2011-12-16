@@ -21,7 +21,7 @@ module ActivitiesHelper
            #{someones(blog.person, person)}
            blog post #{post_link(blog, post)}.)
       when "Person"
-        %(#{person_link(activity.item.commenter)} commented on 
+        %(#{person_link(activity.item.commenter)} commented on
           #{wall(activity)}.)
       end
     when "Connection"
@@ -42,7 +42,7 @@ module ActivitiesHelper
       raise "Invalid activity type #{activity_type(activity).inspect}"
     end
   end
-  
+
   def minifeed_message(activity)
     person = activity.person
     case activity_type(activity)
@@ -62,10 +62,10 @@ module ActivitiesHelper
            #{someones(blog.person, person)}
            blog post #{post_link(blog, post)}.)
         %(#{person_link(person)} made a comment on
-          #{someones(blog.person, person)} 
+          #{someones(blog.person, person)}
           #{post_link("blog post", post.blog, post)}.)
       when "Person"
-        %(#{person_link(activity.item.commenter)} commented on 
+        %(#{person_link(activity.item.commenter)} commented on
           #{wall(activity)}.)
       end
     when "Connection"
@@ -78,7 +78,7 @@ module ActivitiesHelper
     when "Person"
       %(#{person_link(person)} joined the network!)
     when "Topic"
-      %(#{person_link(person)} created a 
+      %(#{person_link(person)} created a
         #{topic_link("new discussion topic", activity.item)}.)
     when "Photo"
       %(#{person_link(person)} changed their profile picture.)
@@ -86,7 +86,7 @@ module ActivitiesHelper
       raise "Invalid activity type #{activity_type(activity).inspect}"
     end
   end
-  
+
   # Given an activity, return the right icon.
   def feed_icon(activity)
     img = case activity_type(activity)
@@ -114,7 +114,7 @@ module ActivitiesHelper
             end
     image_tag("icons/#{img}", :class => "icon")
   end
-  
+
   def someones(person, commenter, link = true)
     # raise commenter.inspect
     if link
@@ -123,11 +123,11 @@ module ActivitiesHelper
       person == commenter ? "their own" : "#{h person.name}'s"
     end
   end
-  
+
   def blog_link(text, blog)
     link_to(text, blog_path(blog))
   end
-  
+
   def post_link(text, blog, post = nil)
     if post.nil?
       post = blog
@@ -136,7 +136,7 @@ module ActivitiesHelper
     end
     link_to(text, blog_post_path(blog, post))
   end
-  
+
   def topic_link(text, topic = nil)
     if topic.nil?
       topic = text
@@ -152,13 +152,13 @@ module ActivitiesHelper
     link_to("#{someones(person, commenter, false)} wall",
             person_path(person, :anchor => "wall"))
   end
-  
+
   private
-  
+
     # Return the type of activity.
     # We switch on the class.to_s because the class itself is quite long
     # (due to ActiveRecord).
     def activity_type(activity)
-      activity.item.class.to_s      
+      activity.item.class.to_s
     end
 end

@@ -6,10 +6,10 @@ describe Admin::ForumsController do
     get :new
     response.should redirect_to(home_url)
   end
-  
+
   it "should allow admin to access a modification page" do
     admin = admin!(login_as(:quentin))
     get :new
-    response.should be_success    
+    response.should be_success
   end
 end

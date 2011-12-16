@@ -1,24 +1,24 @@
 class PersonMailer < ActionMailer::Base
   extend PreferencesHelper
-  
+
   def domain
     @domain ||= PersonMailer.global_prefs.domain
   end
-  
+
   def password_reminder(person)
     from         "Password reminder <password-reminder@#{domain}>"
     recipients   person.email
     subject      "Password reminder"
     body         "domain" => domain, "person" => person
   end
-  
+
   def message_notification(message)
     from         "Message notification <message@#{domain}>"
     recipients   message.recipient.email
     subject      "New message"
     body         "domain" => domain, "message" => message
   end
-  
+
   def connection_request(connection)
     # raise connection.person_id.inspect
     from         "Contact request <connection@#{domain}>"
@@ -26,7 +26,7 @@ class PersonMailer < ActionMailer::Base
     subject      "New contact request"
     body         "domain" => domain, "connection" => connection
   end
-  
+
   def email_verification(ev)
     name = PersonMailer.global_prefs.app_name
     label = name.nil? || name.blank? ? "" : "[#{name}] "

@@ -7,7 +7,7 @@
 # zero. If no block is given, it returns an array containing the collections.
 #
 # If the optional argument fill is set to true, the empty spaces will be
-# filled with nils. The optional argument offset allows the collection to 
+# filled with nils. The optional argument offset allows the collection to
 # start at that index in the array.
 #
 # a = (1..10).to_a
@@ -20,24 +20,24 @@
 # b.collect_every(3,true,1)        #=> [[2, 3, 4], [5, 6, 7]]
 
 class Array
-  
+
   def collect_every(n, fill=false, offset=0)
     result = [ ]
-  
-    self.slice!(0, offset)  
-  
-    result << self.slice!(0, n) until self.empty?  
-  
-    if fill && !result.empty?  
+
+    self.slice!(0, offset)
+
+    result << self.slice!(0, n) until self.empty?
+
+    if fill && !result.empty?
       # ('result.last' cannot be assigned to; use array[i] access)
       result[-1] += [nil] * (n - result[-1].size)
     end
-  
+
     if block_given? && !result.empty?
       yield result.shift until result.empty?
-    end 
-  
+    end
+
     result
   end # collect_every
-  
-end # class 
+
+end # class

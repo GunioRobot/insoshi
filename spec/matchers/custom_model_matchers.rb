@@ -1,12 +1,12 @@
 module CustomModelMatchers
-  
+
   # Verify that a model instance has a maximum length on the given attribute.
   class MaximumLength
     def initialize(attribute, maxlength)
       @attribute = attribute
       @maxlength = maxlength
     end
-    
+
     def matches?(model)
       @model = model
       just_right = model
@@ -15,40 +15,40 @@ module CustomModelMatchers
       too_long.update_attributes(@attribute => "a" * (@maxlength + 1))
       just_right.valid? and not too_long.valid?
     end
-    
+
     def failure_message
       "#{@model.to_s} #{@attribute} should have maximum length #{@maxlength}"
     end
   end
-  
+
   def have_maximum(attribute, maxlength)
     MaximumLength.new(attribute, maxlength)
   end
-  
+
   # Test an array for distict elements.
   # If an array 'a' has distinct elements (no duplicates),
   # a.should have_distinct_elements
   # will pass.
   class DistinctElements
-    
+
     def matches?(ary)
       ary == ary.uniq
     end
-    
+
     def failure_message
       "Array should have distinct elements"
     end
-    
+
     def negative_failure_message
       "Array should not have distinct elements"
     end
   end
-  
+
   def have_distinct_elements
     DistinctElements.new
   end
-  
-  
+
+
   class ExistInDatabase
     def matches?(model)
       model.class.find(model)
@@ -61,17 +61,17 @@ module CustomModelMatchers
     def failure_message
       "Object should exist in the database but doesn't"
     end
-    
+
     def negative_failure_message
       "Object shouldn't exist in the database but does"
     end
   end
-  
+
   def exist_in_database
     ExistInDatabase.new
   end
-  
-  
+
+
   # Verify that an action destroys an associated attribute.
   # Usage:
   #  @topic.should destroy_associated(:posts)
@@ -89,15 +89,15 @@ module CustomModelMatchers
       parent.destroy
       not found?(objects)
     end
-    
+
     def failure_message
       "Expected destruction of associated #{@attribute}"
     end
-    
+
     def negative_failure_message
       "Expected destruction of associated #{@attribute}"
     end
-    
+
     def found?(objects)
       if objects.is_a?(Array)
         # has_many
@@ -115,9 +115,9 @@ module CustomModelMatchers
       false
     end
   end
-  
+
   def destroy_associated(attribute)
     DestroyAssociated.new(attribute)
   end
-  
+
 end

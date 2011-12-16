@@ -5,7 +5,7 @@ if gems.any?
     lib = File.join(dir, 'lib')
     $LOAD_PATH.unshift(lib) if File.directory?(lib)
   end
-  
+
   # Require each gem
   gems.each do |dir|
     init_rb = File.join(dir, 'init.rb')

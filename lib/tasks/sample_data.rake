@@ -5,8 +5,8 @@ require 'active_record/fixtures'
 DATA_DIRECTORY = File.join(RAILS_ROOT, "lib", "tasks", "sample_data")
 
 namespace :db do
-  namespace :sample_data do 
-  
+  namespace :sample_data do
+
     desc "Load sample data"
     task :load => :environment do |t|
       @lipsum = File.open(File.join(DATA_DIRECTORY, "lipsum.txt")).read
@@ -17,8 +17,8 @@ namespace :db do
       make_blog_posts
       make_feed
     end
-      
-    desc "Remove sample data" 
+
+    desc "Remove sample data"
     task :remove => :environment do |t|
       Rake::Task["db:migrate:reset"].invoke
       # Blow away the Ferret index.
@@ -26,7 +26,7 @@ namespace :db do
       # Remove images to avoid accumulation.
       system("rm -rf public/photos")
     end
-    
+
     desc "Reload sample data"
     task :reload => :environment do |t|
       Rake::Task["db:sample_data:remove"].invoke
@@ -47,7 +47,7 @@ def create_people
       name.strip!
       full_name = "#{name} #{last_names.pick.capitalize}"
       person = Person.create!(:email => "#{name.downcase}@example.com",
-                              :password => password, 
+                              :password => password,
                               :password_confirmation => password,
                               :name => full_name,
                               :description => @lipsum)
@@ -71,10 +71,10 @@ def make_messages(text)
   senders = Person.find(:all, :limit => 10)
   senders.each do |sender|
     subject = some_text(SMALL_STRING_LENGTH)
-    Message.create!(:subject => subject, :content => text, 
+    Message.create!(:subject => subject, :content => text,
                     :sender => sender, :recipient => michael,
                     :skip_send_mail => true)
-    Message.create!(:subject => subject, :content => text, 
+    Message.create!(:subject => subject, :content => text,
                     :sender => michael, :recipient => sender,
                     :skip_send_mail => true)
   end
@@ -128,7 +128,7 @@ def uploaded_file(filename, content_type)
 end
 
 def default_person
-  Person.find_by_email('michael@example.com')  
+  Person.find_by_email('michael@example.com')
 end
 
 # Return some random text.

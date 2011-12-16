@@ -41,9 +41,9 @@ module ActsAsFerret
     # This class acts as a drb server listening for indexing and
     # search requests from models declared to 'acts_as_ferret :remote => true'
     #
-    # Usage: 
-    # - modify RAILS_ROOT/config/ferret_server.yml to suit your needs. 
-    # - environments for which no section in the config file exists will use 
+    # Usage:
+    # - modify RAILS_ROOT/config/ferret_server.yml to suit your needs.
+    # - environments for which no section in the config file exists will use
     #   the index locally (good for unit tests/development mode)
     # - run script/ferret_server to start the server:
     # script/ferret_server -e production start
@@ -74,7 +74,7 @@ module ActsAsFerret
         raise "ferret_server not configured for #{RAILS_ENV}" unless (@cfg.uri rescue nil)
         $stdout.puts("starting ferret server...")
 
-        platform_daemon do 
+        platform_daemon do
           self.class.running = true
           DRb.start_service(@cfg.uri, self)
           DRb.thread.join
@@ -143,16 +143,16 @@ module ActsAsFerret
             index.index_models models
           end
           new_version = File.join clazz.aaf_configuration[:index_base_dir], Time.now.utc.strftime('%Y%m%d%H%M%S')
-          # create a unique directory name (needed for unit tests where 
+          # create a unique directory name (needed for unit tests where
           # multiple rebuilds per second may occur)
           if File.exists?(new_version)
             i = 0
             i+=1 while File.exists?("#{new_version}_#{i}")
             new_version << "_#{i}"
           end
-          
+
           File.rename index.options[:path], new_version
-          clazz.index_dir = new_version 
+          clazz.index_dir = new_version
         end
       end
 
@@ -188,7 +188,7 @@ module ActsAsFerret
         def new_index_for(clazz, models)
           aaf_configuration = clazz.aaf_configuration
           ferret_cfg = aaf_configuration[:ferret].dup
-          ferret_cfg.update :auto_flush  => false, 
+          ferret_cfg.update :auto_flush  => false,
                             :create      => true,
                             :field_infos => ActsAsFerret::field_infos(models),
                             :path        => File.join(aaf_configuration[:index_base_dir], 'rebuild')

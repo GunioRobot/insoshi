@@ -6,7 +6,7 @@ http://sites.google.com/a/insoshi.com/insoshi-guides/Installation
 
 for more details.
 
-To follow our progress, join the Insoshi developer community site at 
+To follow our progress, join the Insoshi developer community site at
 
 http://dogfood.insoshi.com/signup
 
@@ -17,7 +17,7 @@ http://groups.google.com/group/insoshi/subscribe
 
 ## Get Git
 
-The source code to Insoshi is managed via Git, a version control system developed by Linus Torvalds to host the Linux kernel.  
+The source code to Insoshi is managed via Git, a version control system developed by Linus Torvalds to host the Linux kernel.
 
 The first step is to install it from here:
 
@@ -65,7 +65,7 @@ Then make a local Git branch for yourself:
 
 $ git checkout -b <local_branch>
 
-where you should replace <local_branch> with the name of your choice (without angle brackets!).  
+where you should replace <local_branch> with the name of your choice (without angle brackets!).
 
 For more information on configuring your local clone of our repository, check out our Git Guides at
 
@@ -103,7 +103,7 @@ Now load the sample data and start the server:
 $ rake db:sample_data:reload
 $ script/server
 
-The rake task loads sample data to make developing easier.  All the sample users have email logins <name>@example.com, with password foobar.  
+The rake task loads sample data to make developing easier.  All the sample users have email logins <name>@example.com, with password foobar.
 
 Go to http://localhost:3000 and log in as follows:
 

@@ -6,7 +6,7 @@ namespace :gems do
 Parameters:
   GEM      Name of gem (required)
   ONLY     RAILS_ENVs for which the GEM will be active (optional)
-  
+
 eos
       break
 		end
@@ -24,26 +24,26 @@ if %w[#{only_list.join(' ')}].include?(ENV['RAILS_ENV'])
     # RubyGems <0.9.5
     # Gem.manage_gems
     # Gem::CommandManager.new
-    
+
     # RubyGems >=0.9.5
     require 'rubygems/command_manager'
     require 'rubygems/commands/unpack_command'
     Gem::CommandManager.instance
-    
+
     gem = Gem.cache.search(gem_name).sort_by { |g| g.version }.last
     version ||= gem.version.version rescue nil
-    
+
     unpack_command_class = Gem::UnpackCommand rescue nil || Gem::Commands::UnpackCommand
     unless gem && path = unpack_command_class.new.get_path(gem_name, version)
       raise "No gem #{gem_name} is installed.  Try 'gem install #{gem_name}' to install the gem."
     end
-    
+
     gems_dir = File.join(RAILS_ROOT, 'vendor', 'gems')
     mkdir_p gems_dir, :verbose => false if !File.exists?(gems_dir)
-    
+
     target_dir = ENV['TO'] || gem.name
     mkdir_p "vendor/gems/#{target_dir}"
-    
+
     chdir gems_dir, :verbose => false do
       mkdir_p target_dir + '/tasks', :verbose => false
       chdir target_dir, :verbose => false do
@@ -59,8 +59,8 @@ else
   require_options = #{path_options.inspect}
   unless require_options.find do |path|
       begin
-        require path 
-      rescue MissingSourceFile 
+        require path
+      rescue MissingSourceFile
         nil
       end
     end
@@ -78,7 +78,7 @@ eos
         end
         File.open(File.join('tasks', 'load_tasks.rake'), 'w') do |file|
           file << <<-eos
-# This file does not include any Rake files, but loads up the 
+# This file does not include any Rake files, but loads up the
 # tasks in the /vendor/gems/ folders
 #{only_if_begin}
   require 'rubygems'

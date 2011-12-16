@@ -7,8 +7,8 @@ class Numeric
   def delim
     number_with_delimiter(self)
   end
-  
-  
+
+
   def to_clock
     ret = ''
     total = self.to_s.to_i #so we don't change self
@@ -16,7 +16,7 @@ class Numeric
       num = (total / 1.hour.to_f).floor
       total -= num * 1.hour
       ret += num.to_s
-    else 
+    else
       ret = '00'
     end
     if total >= 1.minute
@@ -32,8 +32,8 @@ class Numeric
     else
       ret += ':00'
     end
-    
+
     ret
   end
-  
+
 end

@@ -6,11 +6,11 @@
     <% other_person = @message.sender %>
     <% heading = "Message from #{h other_person.name}" %>
   <% end %>
-  
+
   <h2><%= heading %></h2>
 
   <%= render :partial => 'message_nav' %>
-  
+
   <h3 class="subject">
   <%= image_link other_person %>
   <%= @message.subject %></h3>
@@ -21,7 +21,7 @@
     <% unless @message.trashed?(current_person) -%>
       <%= link_to("Trash", @message, :method => :delete) %>
     <% else -%>
-      <%= link_to "Untrash", undestroy_message_path(@message), 
+      <%= link_to "Untrash", undestroy_message_path(@message),
                              :method => :put %>
     <% end -%>
   </p>

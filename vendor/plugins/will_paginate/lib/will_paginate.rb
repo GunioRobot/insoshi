@@ -14,14 +14,14 @@ module WillPaginate
       enable_actionpack
       enable_activerecord
     end
-    
+
     # mixes in WillPaginate::ViewHelpers in ActionView::Base
     def enable_actionpack
       return if ActionView::Base.instance_methods.include? 'will_paginate'
       require 'will_paginate/view_helpers'
       ActionView::Base.class_eval { include ViewHelpers }
     end
-    
+
     # mixes in WillPaginate::Finder in ActiveRecord::Base and classes that deal
     # with associations
     def enable_activerecord
@@ -31,7 +31,7 @@ module WillPaginate
 
       associations = ActiveRecord::Associations
       collection = associations::AssociationCollection
-      
+
       # to support paginating finders on associations, we have to mix in the
       # method_missing magic from WillPaginate::Finder::ClassMethods to AssociationProxy
       # subclasses, but in a different way for Rails 1.2.x and 2.0

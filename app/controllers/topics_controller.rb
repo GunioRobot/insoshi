@@ -1,9 +1,9 @@
 class TopicsController < ApplicationController
-  
+
   before_filter :login_required, :except => [:index, :show]
   before_filter :admin_required, :only => [:edit, :update, :destroy]
   before_filter :setup
-  
+
   def index
     redirect_to forum_url(params[:forum_id])
   end
@@ -62,7 +62,7 @@ class TopicsController < ApplicationController
   end
 
   private
-  
+
     def setup
       @forum = Forum.find(params[:forum_id])
       @body = "forum"

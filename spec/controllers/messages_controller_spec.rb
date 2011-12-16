@@ -4,7 +4,7 @@ describe MessagesController do
 
   before(:each) do
     @emails = ActionMailer::Base.deliveries
-    @emails.clear    
+    @emails.clear
 
     @person = login_as(:quentin)
     @other_person = people(:aaron)
@@ -13,7 +13,7 @@ describe MessagesController do
 
   describe "pages" do
     integrate_views
-    
+
     it "should have a working index" do
       working_page(:index, :received_messages)
     end
@@ -25,19 +25,19 @@ describe MessagesController do
     it "should have working trashed messages" do
       working_page(:trash, :trashed_messages)
     end
-    
+
     it "should have a working show page" do
       get :show, :id => @message
       response.should be_success
       response.should render_template("show")
     end
-    
+
     it "should have a working new page" do
       get :new, :person_id => @person
       response.should be_success
       response.should render_template("new")
     end
-    
+
     it "should have a working reply page" do
       login_as @message.recipient
       get :reply, :id => @message
@@ -52,18 +52,18 @@ describe MessagesController do
       get :reply, :id => @message
       assigns(:recipient).should == @message.recipient
     end
-    
+
     it "should allow create cancellation" do
       post :create, :commit => "Cancel"
       response.should redirect_to(messages_url)
     end
-    
+
     it "should handle invalid reply creation" do
       login_as(:kelly)
       post :create, :parent_id => @message, :person_id => @person
       response.should redirect_to(home_url)
     end
-    
+
     it "should create a message" do
       lambda do
         post :create, :message => { :subject => "The subject",
@@ -71,7 +71,7 @@ describe MessagesController do
                       :person_id => @other_person
       end.should change(Message, :count).by(1)
     end
-    
+
     it "should send a message receipt email" do
       lambda do
         post :create, :message => { :subject => "The subject",
@@ -79,44 +79,44 @@ describe MessagesController do
                       :person_id => @other_person
       end.should change(@emails, :length).by(1)
     end
-    
+
     it "should handle replies as recipient" do
       handle_replies(@message, @message.recipient, @message.sender)
     end
-    
+
     it "should handle replies as sender" do
       handle_replies(@message, @message.sender, @message.recipient)
     end
-    
+
     it "should trash messages" do
       delete :destroy, :id => @message
       assigns(:message).should be_trashed(@message.recipient)
       assigns(:message).should_not be_trashed(@message.sender)
     end
-    
+
     it "should untrash messages" do
       delete :destroy, :id => @message
       put :undestroy, :id => @message
       assigns(:message).should_not be_trashed(@message.recipient)
     end
-    
+
     it "should require login" do
       logout
       get :index
       response.should redirect_to(login_url)
     end
   end
-  
-  
+
+
   private
 
   def working_page(page, message_type)
-    get page      
+    get page
     response.should be_success
     response.should render_template("index")
     assigns(:messages).should == @person.send(message_type)
   end
-  
+
   def handle_replies(message, recipient, sender)
     login_as(recipient)
     lambda do

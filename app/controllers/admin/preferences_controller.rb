@@ -1,12 +1,12 @@
 class Admin::PreferencesController < ApplicationController
-  
+
   before_filter :login_required, :admin_required
   before_filter :setup
-  
+
   def index
     render :action => "show"
   end
-  
+
   def show
     respond_to do |format|
       format.html
@@ -32,14 +32,14 @@ class Admin::PreferencesController < ApplicationController
   end
 
   private
-    
+
     def setup
       @preferences = Preference.find(:first)
     end
-    
+
     # The server needs to be restarted if the email settings change.
     def server_restart?(old_preferences)
-      old_preferences.smtp_server  != @preferences.smtp_server or 
+      old_preferences.smtp_server  != @preferences.smtp_server or
       old_preferences.domain != @preferences.domain or
       old_preferences.server_name != @preferences.server_name
     end

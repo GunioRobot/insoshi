@@ -1,6 +1,6 @@
 class Exception
   alias :original_clean_backtrace :clean_backtrace
-  
+
   def add_links_to_backtrace(lines)
 #    logger.debug lines.to_s.red
     lines.collect do |line|
@@ -39,6 +39,5 @@ protected
       backtracer_original_template_path_for_local_rescue(exception)
     end
   end
-  
+
 end
-  

@@ -13,7 +13,7 @@
         <label for="person_name">Name</label>
         <%= f.text_field :name, :maxlength => Person::MAX_NAME %>
       </div>
-  
+
       <div class="form_row">
         <label for="person_description">Description
           (<%= link_to "Markdown formatting",
@@ -27,7 +27,7 @@
         <label for="person_email">Email</label>
         <%= f.text_field :email, :maxlength => Person::MAX_EMAIL %>
       </div>
-  
+
       <div class="form_row">
         <%= f.submit "Update", :class => "button" %>
       </div>
@@ -37,7 +37,7 @@
   <br />
 
   <h3>Photos</h3>
-  
+
     <% if @person.photos.empty? %>
       <%= image_tag @person.thumbnail %>
     <% else %>
@@ -92,7 +92,7 @@
 
     <div class="form_row">
       <label for="password_confirmation">Confirm Password</label>
-      <%= f.password_field :password_confirmation, 
+      <%= f.password_field :password_confirmation,
                            :maxlength => Person::MAX_PASSWORD,
                            :value => "" %>
     </div>

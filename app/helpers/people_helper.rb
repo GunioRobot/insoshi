@@ -11,17 +11,17 @@ module PeopleHelper
     image = options[:image] || :icon
     image_options = { :title => h(person.name), :alt => h(person.name) }
     unless options[:image_options].nil?
-      image_options.merge!(options[:image_options]) 
+      image_options.merge!(options[:image_options])
     end
     link_options =  { :title => h(person.name) }
-    unless options[:link_options].nil?                    
+    unless options[:link_options].nil?
       link_options.merge!(options[:link_options])
     end
     content = image_tag(person.send(image), image_options)
     # This is a hack needed for the way the designer handled rastered images
     # (with a 'vcard' class).
     if options[:vcard]
-      content = %(#{content}#{content_tag(:span, h(person.name), 
+      content = %(#{content}#{content_tag(:span, h(person.name),
                                                  :class => "fn" )})
     end
     link_to(content, link, link_options)
@@ -42,9 +42,9 @@ module PeopleHelper
     # activities_helper_spec due to an RSpec bug.
     link_to(h(text), person, html_options)
   end
-    
+
   private
-    
+
     # Make captioned images.
     def captioned(images, captions)
       images.zip(captions).map do |image, caption|

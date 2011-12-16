@@ -49,7 +49,7 @@ require 'ferret_server'
 # This mixin adds full text search capabilities to any Rails model.
 #
 # The current version emerged from on the original acts_as_ferret plugin done by
-# Kasper Weibel and a modified version done by Thomas Lockney, which  both can be 
+# Kasper Weibel and a modified version done by Thomas Lockney, which  both can be
 # found on the Ferret Wiki: http://ferret.davebalmain.com/trac/wiki/FerretOnRails.
 #
 # basic usage:
@@ -57,13 +57,13 @@ require 'ferret_server'
 # acts_as_ferret :fields => [ :title, :description ]
 #
 # now you can use ModelClass.find_by_contents(query) to find instances of your model
-# whose indexed fields match a given query. All query terms are required by default, but 
+# whose indexed fields match a given query. All query terms are required by default, but
 # explicit OR queries are possible. This differs from the ferret default, but imho is the more
 # often needed/expected behaviour (more query terms result in less results).
 #
 # Released under the MIT license.
 #
-# Authors: 
+# Authors:
 # Kasper Weibel Nielsen-Refs (original author)
 # Jens Kraemer <jk@jkraemer.net> (active maintainer)
 #
@@ -80,52 +80,52 @@ module ActsAsFerret
   @@ferret_indexes = Hash.new
   def self.ferret_indexes; @@ferret_indexes end
 
- 
-  
+
+
   def self.ensure_directory(dir)
     FileUtils.mkdir_p dir unless (File.directory?(dir) || File.symlink?(dir))
   end
-  
+
   # make sure the default index base dir exists. by default, all indexes are created
   # under RAILS_ROOT/index/RAILS_ENV
   def self.init_index_basedir
     index_base = "#{RAILS_ROOT}/index"
     @@index_dir = "#{index_base}/#{RAILS_ENV}"
   end
-  
+
   mattr_accessor :index_dir
   init_index_basedir
-  
+
   def self.append_features(base)
     super
     base.extend(ClassMethods)
   end
-  
+
   # builds a FieldInfos instance for creation of an index containing fields
   # for the given model classes.
   def self.field_infos(models)
     # default attributes for fields
-    fi = Ferret::Index::FieldInfos.new(:store => :no, 
-                                        :index => :yes, 
+    fi = Ferret::Index::FieldInfos.new(:store => :no,
+                                        :index => :yes,
                                         :term_vector => :no,
                                         :boost => 1.0)
     # primary key
-    fi.add_field(:id, :store => :yes, :index => :untokenized) 
+    fi.add_field(:id, :store => :yes, :index => :untokenized)
     fields = {}
     have_class_name = false
     models.each do |model|
       fields.update(model.aaf_configuration[:ferret_fields])
       # class_name
       if !have_class_name && model.aaf_configuration[:store_class_name]
-        fi.add_field(:class_name, :store => :yes, :index => :untokenized) 
+        fi.add_field(:class_name, :store => :yes, :index => :untokenized)
         have_class_name = true
       end
     end
     fields.each_pair do |field, options|
       options = options.dup
       options.delete(:boost) if options[:boost].is_a?(Symbol)
-      fi.add_field(field, { :store => :no, 
-                            :index => :yes }.update(options)) 
+      fi.add_field(field, { :store => :no,
+                            :index => :yes }.update(options))
     end
     return fi
   end

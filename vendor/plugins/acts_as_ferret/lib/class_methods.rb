@@ -1,5 +1,5 @@
 module ActsAsFerret
-        
+
   module ClassMethods
 
     # Disables ferret index updates for this model. When a block is given,
@@ -23,8 +23,8 @@ module ActsAsFerret
     # rebuild the index from all data stored for this model.
     # This is called automatically when no index exists yet.
     #
-    # When calling this method manually, you can give any additional 
-    # model classes that should also go into this index as parameters. 
+    # When calling this method manually, you can give any additional
+    # model classes that should also go into this index as parameters.
     # Useful when using the :single_index option.
     # Note that attributes named the same in different models will share
     # the same field options in the shared index.
@@ -98,18 +98,18 @@ module ActsAsFerret
       aaf_index.reopen!
       logger.debug "index dir is now #{dir}"
     end
-    
+
     # Retrieve the index instance for this model class. This can either be a
     # LocalIndex, or a RemoteIndex instance.
-    # 
+    #
     # Index instances are stored in a hash, using the index directory
     # as the key. So model classes sharing a single index will share their
     # Index object, too.
     def aaf_index
       ActsAsFerret::ferret_indexes[aaf_configuration[:index_dir]] ||= create_index_instance
-    end 
-    
-    # Finds instances by searching the Ferret index. Terms are ANDed by default, use 
+    end
+
+    # Finds instances by searching the Ferret index. Terms are ANDed by default, use
     # OR between terms for ORed queries. Or specify +:or_default => true+ in the
     # +:ferret+ options hash of acts_as_ferret.
     #
@@ -126,12 +126,12 @@ module ActsAsFerret
     # limit::       number of hits to retrieve, or :all to retrieve
     #               all results
     # lazy::        Array of field names whose contents should be read directly
-    #               from the index. Those fields have to be marked 
+    #               from the index. Those fields have to be marked
     #               +:store => :yes+ in their field options. Give true to get all
-    #               stored fields. Note that if you have a shared index, you have 
+    #               stored fields. Note that if you have a shared index, you have
     #               to explicitly state the fields you want to fetch, true won't
     #               work here)
-    # models::      only for single_index scenarios: an Array of other Model classes to 
+    # models::      only for single_index scenarios: an Array of other Model classes to
     #               include in this search. Use :all to query all models.
     # multi::       Specify additional model classes to search through. Each of
     #               these, as well as this class, has to have the
@@ -142,15 +142,15 @@ module ActsAsFerret
     # retrieving the data from db, useful to i.e. prefetch relationships with
     # :include or to specify additional filter criteria with :conditions.
     #
-    # This method returns a +SearchResults+ instance, which really is an Array that has 
+    # This method returns a +SearchResults+ instance, which really is an Array that has
     # been decorated with a total_hits attribute holding the total number of hits.
     # Additionally, SearchResults is compatible with the pagination helper
     # methods of the will_paginate plugin.
     #
-    # Please keep in mind that the number of results delivered might be less than 
-    # +limit+ if you specify any active record conditions that further limit 
+    # Please keep in mind that the number of results delivered might be less than
+    # +limit+ if you specify any active record conditions that further limit
     # the result. Use +limit+ and +offset+ as AR find_options instead.
-    # +page+ and +per_page+ are supposed to work regardless of any 
+    # +page+ and +per_page+ are supposed to work regardless of any
     # +conitions+ present in +find_options+.
     def find_with_ferret(q, options = {}, find_options = {})
       if options[:per_page]
@@ -188,22 +188,22 @@ module ActsAsFerret
       end
       logger.debug "Query: #{q}\ntotal hits: #{total_hits}, results delivered: #{result.size}"
       SearchResults.new(result, total_hits, options[:page], options[:per_page])
-    end 
+    end
     alias find_by_contents find_with_ferret
 
-   
 
-    # Returns the total number of hits for the given query 
-    # To count the results of a query across multiple models, specify an array of 
+
+    # Returns the total number of hits for the given query
+    # To count the results of a query across multiple models, specify an array of
     # class names with the :multi option.
     #
-    # Note that since we don't query the database here, this method won't deliver 
+    # Note that since we don't query the database here, this method won't deliver
     # the expected results when used on an AR association.
     def total_hits(q, options={})
       if options[:models]
         # backwards compatibility
         logger.warn "the :models option of total_hits is deprecated, please use :multi instead"
-        options[:multi] = options[:models] 
+        options[:multi] = options[:models]
       end
       if models = options[:multi]
         options[:multi] = add_self_to_model_list_if_necessary(models).map(&:to_s)
@@ -211,7 +211,7 @@ module ActsAsFerret
       aaf_index.total_hits(q, options)
     end
 
-    # Finds instance model name, ids and scores by contents. 
+    # Finds instance model name, ids and scores by contents.
     # Useful e.g. if you want to search across models or do not want to fetch
     # all result records (yet).
     #
@@ -220,28 +220,28 @@ module ActsAsFerret
     # A block can be given too, it will be executed with every result:
     # find_id_by_contents(q, options) do |model, id, score|
     #    id_array << id
-    #    scores_by_id[id] = score 
+    #    scores_by_id[id] = score
     # end
     # NOTE: in case a block is given, only the total_hits value will be returned
     # instead of the [total_hits, results] array!
-    # 
+    #
     def find_id_by_contents(q, options = {}, &block)
       deprecated_options_support(options)
       aaf_index.find_id_by_contents(q, options, &block)
     end
 
-    
+
     # returns an array of hashes, each containing :class_name,
     # :id and :score for a hit.
     #
-    # if a block is given, class_name, id and score of each hit will 
+    # if a block is given, class_name, id and score of each hit will
     # be yielded, and the total number of hits is returned.
     def id_multi_search(query, additional_models = [], options = {}, &proc)
       deprecated_options_support(options)
       models = add_self_to_model_list_if_necessary(additional_models)
       aaf_index.id_multi_search(query, models.map(&:to_s), options, &proc)
     end
-    
+
 
     protected
 
@@ -298,7 +298,7 @@ module ActsAsFerret
       end
 
       result = retrieve_records( { self.name => result_ids }, find_options )
-      
+
       # count total_hits via sql when using conditions or when we're called
       # from an ActiveRecord association.
       if find_options[:conditions] or caller.find{ |call| call =~ %r{active_record/associations} }
@@ -339,16 +339,16 @@ module ActsAsFerret
     # retrieves search result records from a data structure like this:
     # { 'Model1' => { '1' => [ rank, score ], '2' => [ rank, score ] }
     #
-    # TODO: in case of STI AR will filter out hits from other 
+    # TODO: in case of STI AR will filter out hits from other
     # classes for us, but this
     # will lead to less results retrieved --> scoping of ferret query
     # to self.class is still needed.
     # from the ferret ML (thanks Curtis Hatter)
     # > I created a method in my base STI class so I can scope my query. For scoping
     # > I used something like the following line:
-    # > 
+    # >
     # > query << " role:#{self.class.eql?(Contents) '*' : self.class}"
-    # > 
+    # >
     # > Though you could make it more generic by simply asking
     # > "self.descends_from_active_record?" which is how rails decides if it should
     # > scope your "find" query for STI models. You can check out "base.rb" in
@@ -366,8 +366,8 @@ module ActsAsFerret
         end
 
         # merge conditions
-        conditions = combine_conditions([ "#{model.table_name}.#{model.primary_key} in (?)", 
-                                          id_array.keys ], 
+        conditions = combine_conditions([ "#{model.table_name}.#{model.primary_key} in (?)",
+                                          id_array.keys ],
                                         find_options[:conditions])
 
         # check for include association that might only exist on some models in case of multi_search
@@ -381,7 +381,7 @@ module ActsAsFerret
         filtered_include_options = nil if filtered_include_options.empty?
 
         # fetch
-        tmp_result = model.find(:all, find_options.merge(:conditions => conditions, 
+        tmp_result = model.find(:all, find_options.merge(:conditions => conditions,
                                                          :include => filtered_include_options))
 
         # set scores and rank
@@ -391,7 +391,7 @@ module ActsAsFerret
         # merge with result array
         result.concat tmp_result
       end
-      
+
       # order results as they were found by ferret, unless an AR :order
       # option was given
       result.sort! { |a, b| a.ferret_rank <=> b.ferret_rank } unless find_options[:order]
@@ -408,7 +408,7 @@ module ActsAsFerret
         begin
           model = model.constantize
           # merge conditions
-          conditions = combine_conditions([ "#{model.table_name}.#{model.primary_key} in (?)", id_array.keys ], 
+          conditions = combine_conditions([ "#{model.table_name}.#{model.primary_key} in (?)", id_array.keys ],
                                           find_options[:conditions])
           opts = find_options.merge :conditions => conditions
           opts.delete :limit; opts.delete :offset
@@ -454,6 +454,6 @@ module ActsAsFerret
     end
 
   end
-  
+
 end
 

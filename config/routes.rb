@@ -23,7 +23,7 @@ ActionController::Routing::Routes.draw do |map|
       forums.resources :topics do |topic|
         topic.resources :posts
       end
-    end    
+    end
   end
   map.resources :blogs do |blog|
     blog.resources :posts do |post|
@@ -36,7 +36,7 @@ ActionController::Routing::Routes.draw do |map|
       topic.resources :posts
     end
   end
-  
+
   map.signup '/signup', :controller => 'people', :action => 'new'
   map.login '/login', :controller => 'sessions', :action => 'new'
   map.logout '/logout', :controller => 'sessions', :action => 'destroy'

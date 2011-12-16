@@ -9,7 +9,7 @@ class Array
     s = ''
     s << '<option></option>' if options[:include_blank]
     s << options[:extras] if options[:extras]
-    each do |a|  
+    each do |a|
       case a.class.to_s
       when 'Array'
         s << "<option value=\"#{a[1]}\"#{' selected="selected"' if a[1] == selected}>#{a[0]}</option>\n"
@@ -25,11 +25,11 @@ class Array
     end
     s
   end
-  
-  
+
+
   def to_select(object, method, options = {})
     s = ''
-    clas = options[:class] || '' 
+    clas = options[:class] || ''
     options.symbolize_keys!
     options[:html].each_pair{|k,v| s << " #{k}=\"#{v}\""} if options[:html]
     <<-SEL
@@ -38,8 +38,8 @@ class Array
 </select>
 SEL
   end
-  
-  
+
+
   def to_csv
     s = ''
     self.each do |a|
@@ -48,16 +48,16 @@ SEL
     end
     s
   end
-  
-  
-  
+
+
+
   def rand
      self[Object.send('rand', size)]
   end
-  
-  
-  
-  
+
+
+
+
   def else_each zero, &proc
     if size > 0
       each &proc
@@ -67,6 +67,6 @@ SEL
   end
 
 
-  
-  
+
+
 end

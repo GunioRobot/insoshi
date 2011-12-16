@@ -6,12 +6,12 @@
   <% form_for :preferences,
               :url => admin_preference_path(@preferences),
               :html => { :method => :put } do |f| %>
-              
+
     <div class="form_row">
       <label for="app_name">Application name</label>
       <%= f.text_field :app_name %>
     </div>
-    
+
     <div class="form_row">
       <label for="domain">Email domain</label>
       <%= f.text_field :domain %>
@@ -36,7 +36,7 @@
 
     <br />
 
-    <p>Verify email for new registrations using an activation code</p>  
+    <p>Verify email for new registrations using an activation code</p>
     <div class="form_row">
       <label for="email_verifications"
              class="checkbox">Email verifications</label>
@@ -46,7 +46,7 @@
     <br />
 
     <div class="form_row">
-      <label for="analytics">Analytics (will be inserted 
+      <label for="analytics">Analytics (will be inserted
          just before the <%= h("</body>") %> tag)</label>
       <%= f.text_area :analytics, :rows => 10 %>
     </div>

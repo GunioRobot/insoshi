@@ -1,8 +1,8 @@
 class PasswordRemindersController < ApplicationController
-  
+
   def new
   end
-  
+
   def create
     person = Person.find_by_email(params[:person][:email])
     respond_to do |format|

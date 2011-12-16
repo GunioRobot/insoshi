@@ -30,7 +30,7 @@ class ActiveRecordTestConnector
     if Object.const_defined?(:ActiveRecord)
       defaults = { :database => ':memory:' }
       ActiveRecord::Base.logger = Logger.new STDOUT if $0 == 'irb'
-      
+
       begin
         options = defaults.merge :adapter => 'sqlite3', :timeout => 500
         ActiveRecord::Base.establish_connection(options)
